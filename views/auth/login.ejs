@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css"
+    />
+    <title>Login Form</title>
+  </head>
+  <body>
+   <section>
+      <div class="container">
+        <div class="columns is-centered">
+          <div class="column is-one-third">
+            <h2 class="pt-5 title is-1 family-primary has-text-centered">Login</h2>
+            <form action="/auth/login" method="POST" class="">
+      
+              <div class="field">
+                <label class="label">Member Name</label>
+                <div class="control ">
+                  <input
+                    class="input "
+                    type="text"
+                    name="memberName"
+                    placeholder="e.g Hieutt31"
+                    required
+                  />
+                <p class="help is-success"></p>
+              </div>
+      
+             
+              <div class="field">
+                <label class="label">Password</label>
+                <div class="control">
+                  <input class="input" type="password" placeholder="" name="password" required/>
+                </div>
+              </div>
+              
+      
+              <div class="field is-grouped">
+                <div class="control">
+                  <button class="button is-link" type="submit">Submit</button>
+                </div>
+                <div class="control">
+                  <button class="button is-link is-danger is-outlined">Cancel</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+   </section>
+  </body>
+</html>
