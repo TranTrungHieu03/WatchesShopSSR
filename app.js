@@ -10,7 +10,7 @@ const MongoStore = require("connect-mongo");
 var indexRouter = require('./routes/index');
 const connectDB = require('./config/database');
 const session = require('express-session');
-const { default: mongoose } = require('mongoose');
+const mongoose = require('mongoose');
 
 var app = express();
 
@@ -45,11 +45,11 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-passport.serializeUser(function(user, cb) {
+passport.serializeUser(function (user, cb) {
   cb(null, user);
 });
 
-passport.deserializeUser(function(obj, cb) {
+passport.deserializeUser(function (obj, cb) {
   cb(null, obj);
 });
 

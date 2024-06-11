@@ -15,17 +15,16 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css"
     />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
     <header>
       <nav class="navbar" role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
-          <a
-            class="navbar-item family-primary"
-            href="/home"
-          >
-            WATCH SHOP
-          </a>
+          <a class="navbar-item family-primary" href="/home"> WATCH SHOP </a>
 
           <a
             role="button"
@@ -43,11 +42,11 @@
 
         <div id="navbarBasicExample" class="navbar-menu">
           <div class="navbar-start">
-            <a class="navbar-item"> Home </a>
+            <a class="navbar-item" href="/home"> Home </a>
 
-            <a class="navbar-item"> Watch </a>
-            <a class="navbar-item"> Brand </a>
-            <a class="navbar-item"> Member </a>
+            <a class="navbar-item" href="/watch"> Watch </a>
+            <a class="navbar-item" href="/brand"> Brand </a>
+            <a class="navbar-item" href="/member"> Member </a>
           </div>
 
           <div class="navbar-end">
@@ -56,7 +55,9 @@
                 <a class="button is-primary is-link" href="/auth/signup">
                   <strong>Sign up</strong>
                 </a>
-                <a class="button is-light is-link" href="/auth/login"> Log in </a>
+                <a class="button is-light is-link" href="/auth/login">
+                  Log in
+                </a>
               </div>
             </div>
           </div>

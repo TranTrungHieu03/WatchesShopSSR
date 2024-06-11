@@ -47,13 +47,14 @@ class AuthController {
             const { memberName, password } = req.body;
 
             const user = await MemberService.getOneByMemberName(memberName);
+            console.log(user);
 
             if (!user) {
-                return res.status(401).render("login", { memberNameMessage: "memberName not found" })
+                return res.status(401).render("auth/login", { memberNameMessage: "memberName not found" })
             }
             const isMatched = bcrypt.compareSync(password, user.password)
             if (!isMatched) {
-                return res.status(404).render("login", { passwordMessage: "Password is wrong" })
+                return res.status(404).render("auth/login", { passwordMessage: "Password is wrong" })
             }
 
             const accessToken = await Token.generateAccessToken({ memberName, password })
@@ -66,12 +67,10 @@ class AuthController {
                 secure: true
             })
 
-            return res.status(200).render("layout")
-            // , {
-            //     body: "index",
-            //     message: "Login successfully",
-            //     accessToken
-            // }
+
+            return res.redirect("/home")
+        
+
         } catch (error) {
             console.error("Error login:", error);
             return res.status(500).render("error");
