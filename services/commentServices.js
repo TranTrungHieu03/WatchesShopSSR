@@ -1,7 +1,7 @@
 const { Comment } = require("../model")
 
 class CommentService {
-    static async getAllComments() {
+    async getAll() {
         try {
             const comments = await Comment.find({})
             return comments
@@ -9,7 +9,7 @@ class CommentService {
             throw new Error("Error fetching comments", error)
         }
     }
-    static async getCommentById(commentId) {
+    async getOne(commentId) {
         try {
             const comments = await Comment.findById(commentId)
             return comments
@@ -17,7 +17,7 @@ class CommentService {
             throw new Error("Error fetching comments", error)
         }
     }
-    static async createComment(comment) {
+    async createComment(comment) {
         try {
             const newcomment = new Comment(comment)
             await newcomment.save()
@@ -27,7 +27,7 @@ class CommentService {
         }
     }
 
-    static async updateCommentById(commentId, data) {
+    async updateById(commentId, data) {
         try {
             const updatecomment = await Comment.findByIdAndUpdate(commentId, data);
             return updatecomment
@@ -36,7 +36,7 @@ class CommentService {
         }
     }
 
-    static async deleteCommentById(commentId) {
+    async deleteById(commentId) {
         try {
             const deletedcomment = await Comment.deleteOne({ _id: commentId });
             return deletedcomment
@@ -44,6 +44,15 @@ class CommentService {
             throw new Error("Error delete comment", error)
         }
     }
+
+    async getAllByAuthor(author) {
+        try {
+            return await Comment.find({ author: author })
+        } catch (error) {
+            throw new Error("Error fetching comment", error)
+        }
+    }
+
 }
 
-module.exports = CommentService
+module.exports = new CommentService

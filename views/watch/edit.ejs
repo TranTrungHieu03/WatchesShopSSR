@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  </head>
+  <body>
+    <div class="container mx-auto md:w-1/2 sm:w-2/3 border p-4 h-fit mt-10">
+      <form
+        action="/watch/<%= watch._id.toString() %>"
+        method="POST"
+        class="flex flex-col gap-6"
+      >
+        <div class="text-4xl font-extrabold text-center">Update watch</div>
+        <div class="flex flex-col gap-2">
+          <div>
+            <label for="watchName" class="font-medium">Watch name</label>
+            <input
+              type="text"
+              name="watchName"
+              class="border-input placeholder:text-muted-foreground focus-visible:ring-ring flex h-9 w-full border bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-1 disabled:cursor-not-allowed disabled:opacity-50"
+              value="<%= watch.watchName %>"
+            />
+          </div>
+          <div>
+            <label for="isAutomatic" class="font-medium pr-4 ">Automatic</label>
+            <input
+              type="radio"
+              id="automaticTrue"
+              name="isAutomatic"
+              class=""
+              value="true"
+              <%= watch.isAutomatic ? 'checked' : '' %>
+            />
+            <label for="automaticTrue" class="pr-4">True</label>
+          
+            <input
+              type="radio"
+              id="automaticFalse"
+              name="isAutomatic"
+              class=""
+              value="false"
+              <%= !watch.isAutomatic ? 'checked' : '' %>
+            />
+            <label for="automaticFalse">False</label>
+          </div>
+          
+          <div>
+            <label for="brand" class="font-medium">Brand</label>
+            <select
+              class="brand-selector border-input ring-offset-background placeholder:text-muted-foreground focus:ring-ring flex h-9 w-full items-center justify-between whitespace-nowrap border bg-transparent px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1"
+            >
+              <% brands.map((brand) => {
+               
+                %>
+              <option
+                class="flex cursor-default items-center justify-center"
+                value="<%= brand._id.toString() %>"
+          <%= brand._id.toString() === watch.brand._id.toString() ? 'selected' : '' %>
+              >
+                <%= brand.brandName %>
+              </option>
+              <% }) %>
+            </select>
+          </div>
+          <div>
+            <label for="price" class="font-medium">Price</label>
+            <input
+              type="number"
+              name="price"
+              class="border-input placeholder:text-muted-foreground focus-visible:ring-ring flex h-9 w-full border bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-1 disabled:cursor-not-allowed disabled:opacity-50"
+              id=""
+              min="0"
+              value="<%= watch.price %>"
+            />
+          </div>
+
+          <div>
+            <label for="image" class="font-medium">Image</label>
+            <input
+              type="url"
+              name="image"
+              class="border-input placeholder:text-muted-foreground focus-visible:ring-ring flex h-9 w-full border bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-1 disabled:cursor-not-allowed disabled:opacity-50"
+              value="<%= watch.image %>"
+            />
+          </div>
+          <div>
+            <label for="watchDescription" class="font-medium">Description</label>
+            <input
+              type="string"
+              name="watchDescription"
+              class="border-input placeholder:text-muted-foreground focus-visible:ring-ring flex h-9 w-full border bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-1 disabled:cursor-not-allowed disabled:opacity-50"
+              value="<%= watch.watchDescription %>"
+            />
+          </div>
+        </div>
+
+        <button type="submit" class="bg-black py-2 px-3 text-white w-fit">
+          Submit
+        </button>
+      </form>
+    </div>
+  </body>
+</html>

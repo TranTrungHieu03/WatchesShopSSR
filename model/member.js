@@ -1,4 +1,5 @@
 const mongoose = require("mongoose")
+var passportLocalMongoose = require('passport-local-mongoose'); 
 
 const Schema = mongoose.Schema
 
@@ -10,4 +11,5 @@ const memberSchema = new Schema({
     name: { type: String, require: true }
 }, { timestamps: true, });
 
+memberSchema.plugin(passportLocalMongoose)
 module.exports = memberSchema

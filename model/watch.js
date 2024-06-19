@@ -9,7 +9,7 @@ const watchSchema = new Schema({
     isAutomatic: { type: Boolean, default: false },
     watchDescription: { type: String, require: true },
     comments: [commentSchema],
-    brand: { type: mongoose.Schema.Types.ObjectId, ref: "Brands", require: true },
+    brand: { type: mongoose.Schema.Types.ObjectId, ref: "Brand", require: true },
 }, { timestamps: true, });
 
 module.exports = watchSchema

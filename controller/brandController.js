@@ -5,7 +5,25 @@ class BrandController {
         try {
             const brands = await BrandService.getAllBrands();
 
-            return res.status(200).render("brand/index", { brands })
+            if (brands.length > 0) {
+
+                return res.status(200).json({ brands: brands })
+            } else {
+                return res.status(200).json({ brands: "not found" })
+            }
+
+
+            // return res.status(200).render("brand/index", { brands })
+        } catch (error) {
+            console.error("Error fetching brands:", error);
+            return res.status(500).render("error");
+        }
+    }
+    static async viewAllBrand(req, res) {
+        try {
+            const brands = await BrandService.getAllBrands();
+            return res.status(200).render("adminLayout", { brands: brands , body: "./brand/dashboard", title: "Brand Dashboard",})
+
         } catch (error) {
             console.error("Error fetching brands:", error);
             return res.status(500).render("error");

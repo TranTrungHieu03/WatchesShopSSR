@@ -11,6 +11,8 @@ var indexRouter = require('./routes/index');
 const connectDB = require('./config/database');
 const session = require('express-session');
 const mongoose = require('mongoose');
+const { Member } = require('./model');
+const LocalStrategy = require('passport-local').Strategy; 
 
 var app = express();
 
@@ -31,7 +33,7 @@ app.use(indexRouter)
 connectDB();
 
 app.use(session({
-  secret: "hieu",
+  secret: "watchesPRJ",
   saveUninitialized: true,
   resave: false,
   cookie: {
@@ -44,14 +46,17 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
+passport.serializeUser(Member.serializeUser()); 
+passport.deserializeUser(Member.deserializeUser()); 
+ 
+passport.use(new LocalStrategy(Member.authenticate())); 
+// passport.serializeUser(function (user, cb) {
+//   cb(null, user);
+// });
 
-passport.serializeUser(function (user, cb) {
-  cb(null, user);
-});
-
-passport.deserializeUser(function (obj, cb) {
-  cb(null, obj);
-});
+// passport.deserializeUser(function (obj, cb) {
+//   cb(null, obj);
+// });
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

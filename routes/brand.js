@@ -7,7 +7,8 @@ var router = express.Router();
 router.route("/")
     .get(BrandController.getAllBrand)
     .post(BrandController.createBrand)
-
+router.route("/dashboard")
+    .get(BrandController.viewAllBrand)
 
 router.route("/:brandId")
     .get(BrandController.getBrand)

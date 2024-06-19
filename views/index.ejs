@@ -1,27 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <title><%= title %></title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.3/jquery-ui.js"></script>
+    <script>
+      $(document).ready(function () {
+        var active = location.search;
+        $(`.filter-brand  #filter-brand input[value="'+active+'"]`).attr(
+          "selected",
+          "selected"
+        );
+      });
+      $(function () {
+        LoadProducts();
 
-
-<div class="">
- <div class="columns is-multiline is-variable is-4 ">
-    <% [0,1,2,3,4,5,6,7,8].map((item) => { %>
-
-    <div class="column is-one-third">
-     <div class="card card-custom">
-        <div class="card-image">
-          <figure class="image is-128x128">
-            <img
-              src="https://bulma.io/assets/images/placeholders/256x256.png"
-              alt="Placeholder image"
-            />
-          </figure>
+        $(document).on("change", "input[name=brand]", function (e) {
+          e.preventDefault();
+          LoadProducts();
+        });
+        var listWatches = $(".list-watches");
+        function LoadProducts() {
+          let brands = $("input[name=brand]:checked")
+            .map(function () {
+              return $(this).val();
+            })
+            .get();
+          $.post(
+            "/watch/filter",
+            {
+              brands,
+            },
+            function (data, status) {
+              if (status === "success") {
+                let _html = ``;
+                data.watches.map((w) => {
+                  _html += `
+  <div class="justify-center items-center flex rounded">
+    <a href="/watch/${w._id}">
+      <div class="group gap-4 hover-underline">
+        <div class="relative">
+          <img
+            src="${w.image}"
+            alt="Placeholder image"
+            class="object-cover h-64 w-72"
+          />
+          ${
+            w.isAutomatic
+              ? `
+            <div
+              class="absolute top-2 left-0 text-black font-black p-2 bg-gradient-to-r from-indigo-600 to-indigo-200 text-sm shadow-sm"
+            >
+              Automatic
+            </div>
+          `
+              : ""
+          }
         </div>
-        <div class="card-content">
-          <div class="content">
-            <div>Caisooo 01</div>
-            <div>Casio</div>
+        <div class="pb-4 pt-2 px-2 bg-gray-50">
+          <div class="font-bold">${w.brand.brandName}</div>
+          <div class="text-sm">${w.watchName}</div>
+        </div>
+      </div>
+    </a>
+  </div>
+`;
+                });
+
+                listWatches.html(_html);
+                if (data.watches.length > 0) {
+                  $(".list-watch-default").html(null);
+                  $(".header-collection")
+                    .html(` <div class="col-span-6 px-4 font-black md:text-xl sm:text-lg">
+            Your Collections
           </div>
+          <div class="col-span-5"></div>
+          <div
+            class="col-span-1 flex md:text-base justify-center border-b shadow-indigo-200 font-normal underline-offset-2 w-fit px-3 pt-2 cursor-pointer hover-font-medium sm:text-sm"
+          >
+            Clear all filter
+          </div>`);
+                }
+              } else {
+                console.error("An error occurred:", status);
+              }
+            }
+          );
+        }
+      });
+
+      $(document).ready(function () {
+        var boxSeletorBrand = $(".filter-brand");
+
+        $.get("/brand", function (data) {
+          const brandsList = data.brands;
+          let _html = ``;
+
+          brandsList.forEach((brand) => {
+            _html += ` <div class="filter-item">
+            <input type="checkbox" name="brand" id=${brand._id.toString()} value=${brand._id.toString()} />
+            <label class="hover-underline py-1" for=${brand._id.toString()}> ${
+              brand.brandName
+            } </label>
+          </div>`;
+          });
+          boxSeletorBrand.html(_html);
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <div class="grid md:grid-cols-5 md:mx-20 my-10 sm:grid-cols-3 sm:mx-5">
+      <div class="col-span-1">
+        <div class="md:text-xl font-black p-4 sm:text-lg">Brand name</div>
+        <div
+          class="filter-brand brand flex flex-col gap-2 md:text-base sm:text-sm"
+          id="filter-brand"
+        ></div>
+      </div>
+      <div class="md:col-span-4 sm:col-span-2">
+        <div class="header-collection col-span-4 grid grid-cols-6 py-4"></div>
+        <div
+          class="list-watches grid row-auto md:grid-cols-3 gap-x-8 gap-y-12 sm:grid-cols-1"
+        ></div>
+        <div
+          class="list-watch-default grid row-auto md:grid-cols-3 gap-x-8 gap-y-12 sm:grid-cols-1"
+        >
+          <% watches.map((item) => { %>
+          <div class="justify-center items-center flex rounded">
+            <a href="/watch/<%= item.id %>">
+              <div class="group gap-4 hover-underline">
+                <div class="relative">
+                  <img
+                    src="<%= item.image %>"
+                    alt="Placeholder image"
+                    class="object-cover h-64 w-72"
+                  />
+                  <% if (item.isAutomatic) { %>
+                  <div
+                    class="absolute top-2 left-0 text-black font-black p-2 bg-gradient-to-r from-indigo-600 to-indigo-200 text-sm shadow-sm"
+                  >
+                    Automatic
+                  </div>
+                  <% } %>
+                </div>
+                <div class="pb-4 pt-2 px-2 bg-gray-50">
+                  <div class="font-bold"><%= item.brand.brandName %></div>
+                  <div class="text-sm"><%= item.watchName %></div>
+                </div>
+              </div>
+            </a>
+          </div>
+          <% })%>
         </div>
-     </div>
+      </div>
     </div>
-    <% })%>
- </div>
-</div>
+  </body>
+</html>

@@ -8,12 +8,6 @@
       href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
       rel="stylesheet"
     />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
-      integrity="sha512-..."
-      crossorigin="anonymous"
-    />
 
     <link rel="stylesheet" href="/stylesheets/style.css" />
   </head>
@@ -24,32 +18,25 @@
       <div class="flex gap-4 w-full justify-between items-center">
         <div class="flex px-3 py-2 font-medium gap-6 items-center *:text-lg">
           <img src="/images/logo.png" alt="" class="w-24" />
-          <!-- <div><a href="/home" class="flex items-center hover-underline px-4">Home</a></div> -->
           <div>
-            <a href="/watch" class="flex items-center hover-underline px-4"
-              >Watches</a
+            <a href="/watch/dashboard" class="flex items-center hover-underline px-4"
+              >Watch</a
             >
           </div>
           <div>
-            <a href="/member" class="flex items-center hover-underline px-4"
+            <a href="/brand/dashboard" class="flex items-center hover-underline px-4"
+              >Brand</a
+            >
+          </div>
+          <div>
+            <a href="/account" class="flex items-center hover-underline px-4"
               >Member</a
             >
           </div>
         </div>
 
         <div class="flex">
-         <form method="POST" action="/watch/search">
-            <input
-              class="border-input w-96 bg-gray-50 text-black placeholder:text-muted-foreground focus-visible:ring-ring h-10 border bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-1 disabled:cursor-not-allowed disabled:opacity-50"
-              placeholder="Watch name"
-              name="searchName"
-            />
-            <button type="submit"
-              class="h-10 bg-gray-50 text-black font-black text-base px-3 py-2 cursor-pointer"
-              >Search</
-            >
-          </div>
-         </form>
+
         <div class="flex gap-4 items-center">
           <!-- <i class="fas fa-user fa-2x text-primary"/> -->
 
@@ -62,6 +49,7 @@
           </a>
         </div>
       </div>
+
     </header>
 
     <main class="section">

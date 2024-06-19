@@ -1,7 +1,7 @@
 const { Member } = require("../model")
 
 class MemberService {
-    static async getAllmembers() {
+    async getAllmembers() {
         try {
             const members = await Member.find({})
             return members
@@ -9,7 +9,7 @@ class MemberService {
             throw new Error("Error fetching members", error)
         }
     }
-    static async getMemberById(memberId) {
+    async getMemberById(memberId) {
         try {
             const member = await Member.findById(memberId)
             return member
@@ -17,7 +17,7 @@ class MemberService {
             throw new Error("Error fetching members", error)
         }
     }
-    static async createMember(member) {
+    async createMember(member) {
         try {
             const newmember = new Member(member)
             return await newmember.save()
@@ -26,7 +26,7 @@ class MemberService {
         }
     }
 
-    static async updateMemberById(memberId, data) {
+    async updateMemberById(memberId, data) {
         try {
             const updatemember = await Member.findByIdAndUpdate(memberId, data);
             return updatemember
@@ -35,7 +35,7 @@ class MemberService {
         }
     }
 
-    static async deleteMemberById(memberId) {
+    async deleteMemberById(memberId) {
         try {
             const deletedmember = await Member.deleteOne({ _id: memberId });
             return deletedmember
@@ -43,13 +43,21 @@ class MemberService {
             throw new Error("Error delete member", error)
         }
     }
-    static async getOneByMemberName(memberName) {
+    async getOneByMemberName(memberName) {
         try {
             return await Member.findOne({ membername: memberName })
         } catch (error) {
             throw new Error("Error find member", error)
         }
     }
+    async updatePassword(id, password) {
+        try {
+            return await Member.findByIdAndUpdate(id, { password: password })
+        } catch (error) {
+            throw new Error("Error update password", error)
+        }
+    }
+
 }
 
-module.exports = MemberService
+module.exports = new MemberService

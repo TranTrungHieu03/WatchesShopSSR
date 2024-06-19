@@ -1,6 +1,7 @@
 const MemberService = require("../services/memberService");
 const bcrypt = require('bcrypt');
 const { Token } = require("../utils/token");
+const { Member } = require("../model");
 const saltRounds = 10;
 
 class AuthController {
@@ -32,10 +33,25 @@ class AuthController {
                 })
             }
             const hashPassword = bcrypt.hashSync(password, saltRounds);
+            const newUser = new Member({ memberName, password: hashPassword, YOB, name })
+            Member.register(newUser, hashPassword, function (err, user) {
+                if (err) {
+                    res.json({ success: false, message: "Your account could not be saved. Error: " + err });
+                } else {
+                    return res.status(201).render("auth/login", { message: "Sign up an account successfully" })
+                    // req.login(user, (err) => {
+                    //     if (err) {
+                    //         res.json({ success: false, message: err });
+                    //     } else {
+                    //         res.json({ success: true, message: "Your account has been saved" });
+                    //     }
+                    // });
+                }
+            });
 
-            await MemberService.createMember({ membername: memberName, password: hashPassword, YOB, name, isAdmin: false })
+            // await MemberService.createMember({ membername: memberName, password: hashPassword, YOB, name, isAdmin: false })
 
-            return res.status(201).render("auth/login", { message: "Sign up an account successfully" })
+            // return res.status(201).render("auth/login", { message: "Sign up an account successfully" })
         } catch (error) {
             console.error("Error Sign up:", error);
             return res.status(500).render("error");
@@ -58,18 +74,18 @@ class AuthController {
             }
 
             const accessToken = await Token.generateAccessToken({ memberName, password })
-            const refreshToken = await Token.generateRefreshToken({ memberName, password })
+            // const refreshToken = await Token.generateRefreshToken({ memberName, password })
 
-            await res.cookie("refreshToken", refreshToken, {
-                httpOnly: true,
-                maxAge: 30 * 24 * 60 * 60 * 1000,
-                sameSite: "strict",
-                secure: true
-            })
+            // await res.cookie("refreshToken", refreshToken, {
+            //     httpOnly: true,
+            //     maxAge: 30 * 24 * 60 * 60 * 1000,
+            //     sameSite: "strict",
+            //     secure: true
+            // })
 
 
             return res.redirect("/home")
-        
+
 
         } catch (error) {
             console.error("Error login:", error);

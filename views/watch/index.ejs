@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title %></title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="md:mx-20 py-5 sm:mx-5 sm:justify-center">
+      <div class="grid md:grid-cols-2 sm:grid-cols-1 gap-4">
+        <div class="col-span-1">
+          <img
+            src="<%= watch.image %>"
+            alt="<%= watch.watchName %>"
+            class="w-4/5 h-auto object-cover"
+          />
+        </div>
+        <div class="col-span-1">
+          <div>
+            <div class="py-2">
+              <div class="text-3xl font-black hover-underline w-fit">
+                <%= watch.brand.brandName %> 
+              </div>
+              <div class="text-xl font-extrabold"><%= watch.watchName %></div>
+            </div>
+
+            <div class="font-bold text-2xl flex justify-start gap-1 py-1">
+              $<span class="font-bold text-4xl"><%= watch.price %></span>
+            </div>
+            <% if (watch.isAutomatic) { %>
+            <div class="inline-block">
+              <span class="text-lg font-extrabold">Special property:</span>
+              <p class="text-lg   inline">Automatic</p>
+            </div>
+            <% } %>
+            <div>
+              <span class="font-extrabold text-lg">Product's information: </span>
+              <p class="inline text-lg"><%= watch.watchDescription %></p>
+            </div>
+          </div>
+          <!-- <button class="px-3 py-2 my-4 bg-black text-white font-black text-lg">
+            Add to cart
+          </button> -->
+
+          <div class="py-3">
+            <div class="font-black collapse text-2xl">Product review</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  </head>
+  <body>
+    <div class="mx-20 my-10 flex items-center justify-center">
+      <table class="table-auto w-2/3 caption-bottom text-base border-collapse bg-white shadow-md rounded-lg overflow-hidden">
+        <caption class="text-4xl font-black py-2">Brand Dashboard</caption>
+        <thead class="bg-gray-100 border-b-2 border-gray-300">
+          <tr>
+            <th class="px-4 py-2 text-left">No.</th>
+            <th class="px-4 py-2 text-left">Name</th>
+            <th class="px-4 py-2 text-left">Created at</th>
+            <th class="px-4 py-2 text-left">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% brands.map((brand, index) => { %>
+          <tr class="border-b">
+            <td class="px-4 py-2"><%= index + 1 %></td>
+            <td class="px-4 py-2"><%= brand.brandName %></td>
+            <td class="px-4 py-2"><%= new Date(brand.createdAt).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' }) %></td>
+            <td class="px-4 py-2">
+             <a href="/brand/delete/<%= brand._id.toString() %>"> <button class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Delete</button></a>
+              <a href="/brand/edit/<%= brand._id.toString() %>">
+                <button class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">Edit</button>
+              </td>
+              </a>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+      
+    </div>
+  </body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  </head>
+  <body>
+    <div class="mx-20 my-10 flex items-center justify-center">
+      <table
+        class="table-auto w-full caption-bottom text-base border-collapse bg-white shadow-md rounded-lg overflow-hidden"
+      >
+        <caption class="text-4xl font-black py-2">
+          Watch Dashboard
+        </caption>
+        <thead class="bg-gray-100 border-b-2 border-gray-300">
+          <tr>
+            <th class="px-4 py-2 text-center">No.</th>
+            <th class="px-4 py-2 text-left">Brand name</th>
+            <th class="px-4 py-2 text-left">Name</th>
+            <th class="px-4 py-2 text-left">Price</th>
+            <th class="px-4 py-2 text-left">Image</th>
+            <th class="px-4 py-2 text-left"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% watches.map((w, index) => { %>
+          <tr class="border-b">
+            <td class="px-4 py-2 text-center"><%= index %></td>
+            <td class="px-4 py-2 text-left"><%= w.brand.brandName %></td>
+            <td class="px-4 py-2 text-left"><%= w.watchName %></td>
+            <td class="px-4 py-2 text-left"><%= w.price %></td>
+            <td class="px-4 py-2 text-left">
+              <img src="<%= w.image %>" alt="" class="w-24 h-24 object-cover" />
+            </td>
+            <td>
+              <a href="/watch/delete/<%= w._id.toString() %>">
+                <button
+                  class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                >
+                  Delete
+                </button>
+              </a>
+              <a href="/watch/edit/<%= w.id %>">
+                <button
+                  class="bg-yellow-400 text-white px-3 py-1 rounded hover:bg-yellow-500"
+                >
+                  Edit
+                </button>
+              </a>
+            </td>
+          </tr>
+
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>

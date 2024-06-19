@@ -2,7 +2,7 @@
 body
 {
   background-color:#fff;
-  max-width: 100vh;
+  width: 100vw;
 /*   background: radial-gradient(at 50% -20%, #908392, #0d060e) fixed; */
 }
 
