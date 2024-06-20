@@ -33,8 +33,19 @@ class WatchService {
 
     async updateWatchById(watchId, data) {
         try {
-            const updateWatch = await Watch.findByIdAndUpdate(watchId, data);
-            return updateWatch
+            console.log(">>>>>>", data);
+            console.log(await Watch.findById(watchId));
+
+
+            const updateWatch = await Watch.findByIdAndUpdate(watchId, data, { new: true });
+            // const updateWatch = await Watch.findByIdAndUpdate(watchId, data, { new: true }).catch(err => {
+            //     console.error('Lỗi từ MongoDB:', err);
+            //     throw new Error('Không thể cập nhật đồng hồ');
+            // });
+
+            console.log(updateWatch);
+
+            // return updateWatch
         } catch (error) {
             throw new Error("Error update watch", error)
         }
@@ -91,7 +102,7 @@ class WatchService {
         try {
             const mongoose = require('mongoose');
             const ObjectId = mongoose.Types.ObjectId;
-            const brandList = brands.map((brand) => new ObjectId(brand))
+            const brandList = await brands.map((brand) => new ObjectId(brand))
             const watches = await Watch.find({ brand: { $in: brandList } }).populate("brand")
 
             return watches;

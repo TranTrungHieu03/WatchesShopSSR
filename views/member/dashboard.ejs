@@ -9,20 +9,32 @@
       rel="stylesheet"
     />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <title><%= title %></title>
   </head>
   <body>
     <div class="mx-20 my-10 flex items-center justify-center">
       <table class="table-auto w-2/3 caption-bottom text-base border-collapse bg-white shadow-md rounded-lg overflow-hidden">
-        <caption class="text-4xl font-black py-2">Brand Dashboard</caption>
+        <caption class="text-4xl font-black py-2">Account Dashboard</caption>
         <thead class="bg-gray-100 border-b-2 border-gray-300">
           <tr>
             <th class="px-4 py-2 text-left">No.</th>
             <th class="px-4 py-2 text-left">Name</th>
-            <th class="px-4 py-2 text-left">Created at</th>
-            <th class="px-4 py-2 text-left">Actions</th>
+            <th class="px-4 py-2 text-left">Member name</th>
+            <th class="px-4 py-2 text-left">Year of Birth</th>
+            <th class="px-4 py-2 text-left">Role</th>
           </tr>
         </thead>
-         
+         <tbody>
+          <% members.map((m, index) => { %>
+          <tr class="border-b">
+            <td class="px-4 py-2 text-left"><%= index + 1 %></td>
+            <td class="px-4 py-2 text-left"><%= m.name %></td>
+            <td class="px-4 py-2 text-left"><%= m.membername %></td>
+            <td class="px-4 py-2 text-left"><%= m.YOB %></td>
+            <td class="px-4 py-2 text-left"><%= m.isAdmin ? "Admin" : "Member" %></td>
+          </tr>
+          <%}) %>
+         </tbody>
       </table>
       
     </div>

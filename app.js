@@ -4,15 +4,13 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const passport = require("passport");
-const MongoStore = require("connect-mongo");
+const passportConfig = require('./config/passport');
 
 
 var indexRouter = require('./routes/index');
 const connectDB = require('./config/database');
 const session = require('express-session');
-const mongoose = require('mongoose');
-const { Member } = require('./model');
-const LocalStrategy = require('passport-local').Strategy; 
+ 
 
 var app = express();
 
@@ -22,41 +20,30 @@ app.set('view engine', 'ejs');
 
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
-// app.use('/', indexRouter);
-app.use(indexRouter)
-
+ 
 // connect DB
 connectDB();
-
+ 
 app.use(session({
   secret: "watchesPRJ",
-  saveUninitialized: true,
+  saveUninitialized: false,
   resave: false,
-  cookie: {
-    maxAge: 60000 * 60
-  },
-  store: MongoStore.create({
-    client: mongoose.connection.getClient()
-  })
+  cookie: { maxAge: 1000 * 60 * 5 }
 }))
 
 app.use(passport.initialize());
 app.use(passport.session());
-passport.serializeUser(Member.serializeUser()); 
-passport.deserializeUser(Member.deserializeUser()); 
+passportConfig(passport)
  
-passport.use(new LocalStrategy(Member.authenticate())); 
-// passport.serializeUser(function (user, cb) {
-//   cb(null, user);
-// });
+app.use((req, res, next) => {
+  res.locals.user = req.user;
+  next();
+});
 
-// passport.deserializeUser(function (obj, cb) {
-//   cb(null, obj);
-// });
+app.use(indexRouter)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

@@ -55,13 +55,13 @@
             <label for="brand" class="font-medium">Brand</label>
             <select
               class="brand-selector border-input ring-offset-background placeholder:text-muted-foreground focus:ring-ring flex h-9 w-full items-center justify-between whitespace-nowrap border bg-transparent px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1"
-            >
+            name="brand" id="brand"
+              >
               <% brands.map((brand) => {
-               
                 %>
               <option
                 class="flex cursor-default items-center justify-center"
-                value="<%= brand._id.toString() %>"
+                value="<%= brand._id %>"
           <%= brand._id.toString() === watch.brand._id.toString() ? 'selected' : '' %>
               >
                 <%= brand.brandName %>

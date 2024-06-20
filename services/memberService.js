@@ -17,10 +17,12 @@ class MemberService {
             throw new Error("Error fetching members", error)
         }
     }
-    async createMember(member) {
+    async createMember(membername, password, YOB, name) {
         try {
-            const newmember = new Member(member)
-            return await newmember.save()
+            const newmember = new Member({membername, password, YOB, name})
+            console.log(newmember);
+            await newmember.save()
+            return newmember  
         } catch (error) {
             throw new Error("Error create member", error)
         }

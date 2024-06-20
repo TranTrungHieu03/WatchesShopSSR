@@ -24,7 +24,7 @@
           <div>
             <div class="py-2">
               <div class="text-3xl font-black hover-underline w-fit">
-                <%= watch.brand.brandName %> 
+                <%= watch.brand.brandName %>
               </div>
               <div class="text-xl font-extrabold"><%= watch.watchName %></div>
             </div>
@@ -35,11 +35,13 @@
             <% if (watch.isAutomatic) { %>
             <div class="inline-block">
               <span class="text-lg font-extrabold">Special property:</span>
-              <p class="text-lg   inline">Automatic</p>
+              <p class="text-lg inline">Automatic</p>
             </div>
             <% } %>
             <div>
-              <span class="font-extrabold text-lg">Product's information: </span>
+              <span class="font-extrabold text-lg"
+                >Product's information:
+              </span>
               <p class="inline text-lg"><%= watch.watchDescription %></p>
             </div>
           </div>
@@ -49,6 +51,18 @@
 
           <div class="py-3">
             <div class="font-black collapse text-2xl">Product review</div>
+            <div>
+              <form method="POST" action="/watch/<%= watch._id %>/comment">
+                <div class="w-full flex gap-2">
+                  <input
+                    name="comment"
+                    type="text"
+                    class="border-input placeholder:text-muted-foreground rounded focus-visible:ring-ring flex h-9 w-full border bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-1 disabled:cursor-not-allowed disabled:opacity-50"
+                  />
+                  <button type="submit" class=" bg-gray-400 font-bold px-2  text-center justify-center items-center flex rounded cursor-pointer">Send</button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       </div>

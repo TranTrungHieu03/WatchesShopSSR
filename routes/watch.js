@@ -1,29 +1,31 @@
 var express = require('express');
 const watchController = require('../controller/watchController');
-const upload = require('../middleware/multer');
+const authMiddleware = require('../middleware/authMiddleware');
 var router = express.Router();
 
 router.route("/dashboard")
-  .get(watchController.viewAll);
+  .get(authMiddleware.ensureAuthenticated, authMiddleware.isAdmin, watchController.viewAll);
 
 router.route("/form")
-  .get(watchController.indexCreate);
+  .get(authMiddleware.ensureAuthenticated, authMiddleware.isAdmin, watchController.indexCreate);
 
-router.route("/search")
-  .post(watchController.searchWatch);
-
-router.get("/edit/:watchId", watchController.indexEdit);
+router.route("/search").post(watchController.searchWatch);
 
 router.post("/filter", watchController.filterWatch);
 
+router.get("/edit/:watchId", authMiddleware.ensureAuthenticated, authMiddleware.isAdmin, watchController.indexEdit);
+
+
+
 router.route("/")
   .get(watchController.getAll)
-  .post(watchController.postWatch);
+  .post(authMiddleware.ensureAuthenticated, watchController.postWatch);
+
 
 router.route("/:watchId")
   .get(watchController.getWatch)
-  .post(watchController.updateWatch)
-  .delete(watchController.deleteWatch);
+  .post(authMiddleware.ensureAuthenticated, watchController.updateWatch)
+  .delete(authMiddleware.ensureAuthenticated, watchController.deleteWatch);
 
 
 module.exports = router;

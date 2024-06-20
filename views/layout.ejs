@@ -24,18 +24,20 @@
       <div class="flex gap-4 w-full justify-between items-center">
         <div class="flex px-3 py-2 font-medium gap-6 items-center *:text-lg">
           <img src="/images/logo.png" alt="" class="w-24" />
-          <!-- <div><a href="/home" class="flex items-center hover-underline px-4">Home</a></div> -->
-          <div>
+         <div>
             <a href="/watch" class="flex items-center hover-underline px-4"
-              >Watches</a
+              >Watch</a
             >
           </div>
-          <div>
-            <a href="/member" class="flex items-center hover-underline px-4"
-              >Member</a
-            >
+          <% if ( user?._id )  { %>
+            <div>
+              <a href="/member/<%= user?._id %>" class="flex items-center hover-underline px-4"
+                >My Profile</a
+              >
+            </div>
+            <% }  %>
           </div>
-        </div>
+           
 
         <div class="flex">
          <form method="POST" action="/watch/search">
@@ -51,8 +53,7 @@
           </div>
          </form>
         <div class="flex gap-4 items-center">
-          <!-- <i class="fas fa-user fa-2x text-primary"/> -->
-
+          <% if (user?._id ) { %>
           <a href="/logout"
             ><button
               class="py-2 px-3 text-black font-bold bg-gray-100 w-fit   hover:bg-gray-200"
@@ -60,6 +61,15 @@
               Log out
             </button>
           </a>
+          <% }else { %>
+            <a href="/login"
+            ><button
+              class="py-2 px-3 text-black font-bold bg-gray-100 w-fit   hover:bg-gray-200"
+            >
+              Login
+            </button>
+          </a>
+            <% } %>
         </div>
       </div>
     </header>

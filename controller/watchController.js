@@ -36,8 +36,8 @@ class WatchController {
     async filterWatch(req, res) {
         try {
             let brands = []
-            const temp = req.body['brands[]']
-            if (temp == undefined) return res.status(403)
+            const temp = req.body.brands
+            if (temp == undefined) return res.status(400).send({ message: "Do not found any watch" })
             if (!Array.isArray(temp)) {
 
                 brands = [temp]
@@ -73,6 +73,8 @@ class WatchController {
     }
     async searchWatch(req, res) {
         try {
+            console.log(33333333333333333333333);
+
             const searchItem = req.body.searchName;
             const watches = await watchService.findByName(searchItem)
 
@@ -89,8 +91,8 @@ class WatchController {
     async postWatch(req, res) {
         try {
             const { watchName, price, isAutomatic, watchDescription, comments, brand, image } = req.body
-           
-            
+
+
             if (!watchName || !price || !watchDescription || !brand) {
                 return res.status(404).render("layout", {
                     body: "./watch/form",
@@ -99,10 +101,10 @@ class WatchController {
             }
             console.log(watchName, price, isAutomatic, watchDescription, comments, brand, image);
 
-            
+
             await watchService.createWatch({ watchName, price, isAutomatic, watchDescription, comments, brand, image })
             return res.redirect("/watch")
-            
+
         } catch (error) {
             console.error("Error create watch:", error);
             return res.status(500).render("error");
@@ -110,23 +112,22 @@ class WatchController {
     }
     async updateWatch(req, res) {
         try {
-            const  watchId = req.params.watchId
-            const { watchName, price, watchDescription, comments, brand, isAutomatic } = req.body
+            const { watchId } = req.params
+            const { watchName, price, watchDescription, brand, isAutomatic } = req.body
 
-            if (!watchName || !price || !watchDescription || !comments || !brand) {
-                return res.status(404).render("error")
+            if (!watchName || !price || !watchDescription || !brand) {
+                return res.status(400).send({ message: "Bad request" })
             }
-            const watch = await watchService.getWatch(watchId)
+            const watch = await watchService.getWatchById(watchId)
 
             if (!watch) {
-                return res.render("error")
+                return res.status(400).send({ message: "Not found watch" })
             }
-            const data = new Watch(req.body)
-            console.log(data);
-            
-            await watchService.updateWatchById(watchId, data)
+            // const data = new Watch(req.body)
 
-            return res.redirect(`/watch/${watchId}`)
+            await watchService.updateWatchById(watchId, req.body)
+
+            return res.redirect(`/watch/dashboard`)
         } catch (error) {
             console.error("Error update watch:", error);
             return res.status(500).render("error");

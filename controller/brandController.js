@@ -11,9 +11,6 @@ class BrandController {
             } else {
                 return res.status(200).json({ brands: "not found" })
             }
-
-
-            // return res.status(200).render("brand/index", { brands })
         } catch (error) {
             console.error("Error fetching brands:", error);
             return res.status(500).render("error");
@@ -45,7 +42,8 @@ class BrandController {
         try {
             const data = req.body;
             const newBrand = await BrandService.createBrand(data);
-            return res.status(201).render("brand/viewOne", { brand: newBrand })
+            return res.redirect("/brand/dashboard")
+             
         } catch (error) {
             console.error("Error create brand:", error);
             return res.status(500).render("error");
@@ -54,9 +52,14 @@ class BrandController {
 
     static async updateBrand(req, res) {
         try {
-            const { brandId, data } = req.body;
-            const updateBrand = await BrandService.updateBrand(brandId, data.brandName)
-            return res.status(201).render("brand/viewOne", { brand: updateBrand })
+            const brandId = req.params.brandId
+            const {brandName } = req.body;
+            const brand = await BrandService.getBrandById(brandId)
+            if (!brand) {
+                return res.status(400).render("")
+            }
+            await BrandService.updateBrandById( brandId, brandName);
+            return res.status(200).redirect("/brand/dashboard")
         } catch (error) {
             console.error("Error update brand:", error);
             return res.status(500).render("error");
@@ -72,6 +75,31 @@ class BrandController {
             return res.status(500).render("error");
         }
     }
+    static async indexCreate(req, res) {
+        try {
+            return res.status(200).render("adminLayout", {
+                body: "./brand/create",
+                title: "Add brand"
+            })
+        } catch (error) {
+            console.error("Error brand:", error);
+            return res.status(500).render("error");
+        }
+    }
+    static async indexEdit(req, res) {
+        try {
+            const brand = await BrandService.getBrandById(req.params.brandId);
+            return res.status(200).render("adminLayout", {
+                body: "./brand/edit",
+                title: "Edit brand",
+                brand: brand
+            })
+        } catch (error) {
+            console.error("Error brand:", error);
+            return res.status(500).render("error");
+        }
+    }
+    
 }
 
 module.exports = BrandController

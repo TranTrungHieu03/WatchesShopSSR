@@ -28,6 +28,20 @@ class CommentController {
         }
     }
 
+    async createComment(req, res) {
+        try {
+            const { watchId } = req.params;
+            const { content, rating } = req.body;
+            const author = req.user._id;
+
+            console.log(watchId, content, rating, author);
+
+        } catch (error) {
+            console.error("Error create comments:", error);
+            return res.status(500).render("error");
+        }
+    }
+
 }
 
 module.exports = new CommentController

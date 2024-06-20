@@ -8,110 +8,122 @@
       rel="stylesheet"
     />
     <title><%= title %></title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-    <script src="https://code.jquery.com/ui/1.13.3/jquery-ui.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.3/jquery-ui.min.js"></script>
     <script>
       $(document).ready(function () {
         var active = location.search;
-        $(`.filter-brand  #filter-brand input[value="'+active+'"]`).attr(
-          "selected",
-          "selected"
-        );
-      });
-      $(function () {
+        // $('.filter-brand  #filter-brand input[value="' + active + '"]').attr(
+        //   "selected",
+        //   "selected"
+        // );
+
         LoadProducts();
 
         $(document).on("change", "input[name=brand]", function (e) {
           e.preventDefault();
+          console.log("Brand changed");
           LoadProducts();
         });
+
         var listWatches = $(".list-watches");
+
         function LoadProducts() {
           let brands = $("input[name=brand]:checked")
             .map(function () {
               return $(this).val();
             })
             .get();
-          $.post(
-            "/watch/filter",
-            {
-              brands,
-            },
-            function (data, status) {
+
+
+          if (brands.length < 1) {
+            $(".header-collection").html(null);
+            $(".list-watches").html(null);
+            $(".list-watch-default").removeClass("hidden");
+          } else {
+            $.post("/watch/filter", { brands }, function (data, status) {
+              
               if (status === "success") {
                 let _html = ``;
-                data.watches.map((w) => {
+                data.watches.forEach((w) => {
                   _html += `
-  <div class="justify-center items-center flex rounded">
-    <a href="/watch/${w._id}">
-      <div class="group gap-4 hover-underline">
-        <div class="relative">
-          <img
-            src="${w.image}"
-            alt="Placeholder image"
-            class="object-cover h-64 w-72"
-          />
-          ${
-            w.isAutomatic
-              ? `
-            <div
-              class="absolute top-2 left-0 text-black font-black p-2 bg-gradient-to-r from-indigo-600 to-indigo-200 text-sm shadow-sm"
-            >
-              Automatic
-            </div>
-          `
-              : ""
-          }
-        </div>
-        <div class="pb-4 pt-2 px-2 bg-gray-50">
-          <div class="font-bold">${w.brand.brandName}</div>
-          <div class="text-sm">${w.watchName}</div>
-        </div>
-      </div>
-    </a>
-  </div>
-`;
+                      <div class="justify-center items-center flex rounded">
+                        <a href="/watch/${w._id}">
+                          <div class="group gap-4 hover-underline">
+                            <div class="relative">
+                              <img
+                                src="${w.image}"
+                                alt="Placeholder image"
+                                class="object-cover h-64 w-72"
+                              />
+                              ${
+                                w.isAutomatic
+                                  ? `
+                                <div class="absolute top-2 left-0 text-black font-black p-2 bg-gradient-to-r from-indigo-600 to-indigo-200 text-sm shadow-sm">
+                                  Automatic
+                                </div>`
+                                  : ""
+                              }
+                            </div>
+                            <div class="pb-4 pt-2 px-2 bg-gray-50">
+                              <div class="font-bold">${w.brand.brandName}</div>
+                              <div class="text-sm">${w.watchName}</div>
+                            </div>
+                          </div>
+                        </a>
+                      </div>
+                    `;
                 });
 
-                listWatches.html(_html);
                 if (data.watches.length > 0) {
-                  $(".list-watch-default").html(null);
-                  $(".header-collection")
-                    .html(` <div class="col-span-6 px-4 font-black md:text-xl sm:text-lg">
-            Your Collections
-          </div>
-          <div class="col-span-5"></div>
-          <div
-            class="col-span-1 flex md:text-base justify-center border-b shadow-indigo-200 font-normal underline-offset-2 w-fit px-3 pt-2 cursor-pointer hover-font-medium sm:text-sm"
-          >
-            Clear all filter
-          </div>`);
+                  $(".list-watch-default").addClass("hidden");
+                  listWatches.html(_html);
+                  $(".header-collection").html(`
+                      <div class="col-span-6 px-4 font-black md:text-xl sm:text-lg">
+                        Your Collections
+                      </div>
+                      <div class="col-span-5"></div>
+                      <a href="/watch">
+                        <div class="col-span-1 flex md:text-base justify-center border-b shadow-indigo-200 font-normal underline-offset-2 w-fit px-3 pt-2 cursor-pointer hover-font-medium sm:text-sm">
+                          Clear all filter
+                        </div>
+                      </a>
+                    `);
+                } else {
+                  $(".header-collection").html(`
+                      <div class="col-span-6 px-4 font-black md:text-xl sm:text-lg">
+                        Your Collections
+                      </div>
+                      <div class="col-span-5"></div>
+                      <div class="col-span-1 flex md:text-base justify-center border-b shadow-indigo-200 font-normal underline-offset-2 w-fit px-3 pt-2 cursor-pointer hover-font-medium sm:text-sm">
+                        Clear all filter
+                      </div>
+                      <div>Not found any things</div>
+                    `);
+                  $(".list-watch-default").addClass("hidden");
                 }
               } else {
                 console.error("An error occurred:", status);
               }
-            }
-          );
+            });
+          }
         }
-      });
 
-      $(document).ready(function () {
-        var boxSeletorBrand = $(".filter-brand");
+        var boxSelectorBrand = $(".filter-brand");
 
         $.get("/brand", function (data) {
           const brandsList = data.brands;
           let _html = ``;
 
           brandsList.forEach((brand) => {
-            _html += ` <div class="filter-item">
-            <input type="checkbox" name="brand" id=${brand._id.toString()} value=${brand._id.toString()} />
-            <label class="hover-underline py-1" for=${brand._id.toString()}> ${
-              brand.brandName
-            } </label>
-          </div>`;
+            _html += `
+              <div class="filter-item">
+                <input type="checkbox" name="brand" id="${brand._id}" value="${brand._id}" />
+                <label class="hover-underline py-1" for="${brand._id}">${brand.brandName}</label>
+              </div>
+            `;
           });
-          boxSeletorBrand.html(_html);
+          boxSelectorBrand.html(_html);
         });
       });
     </script>
@@ -158,7 +170,7 @@
               </div>
             </a>
           </div>
-          <% })%>
+          <% }) %>
         </div>
       </div>
     </div>

@@ -27,9 +27,11 @@ class BrandService {
         }
     }
 
-    static async updateBrandById(brandId, data) {
+    static async updateBrandById(brandId, brandName) {
         try {
-            const updateBrand = await Brand.findByIdAndUpdate(brandId, data);
+            const updateBrand = await Brand.findByIdAndUpdate(brandId, {brandName});
+            console.log(updateBrand);
+            
             return updateBrand
         } catch (error) {
             throw new Error("Error update brand", error)

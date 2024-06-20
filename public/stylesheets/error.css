@@ -2,8 +2,8 @@
 body
 {
   background-color:#fff;
-  width: 100vw;
-/*   background: radial-gradient(at 50% -20%, #908392, #0d060e) fixed; */
+  width: 100%;
+  background: radial-gradient(at 50% -20%, #908392, #0d060e) fixed;
 }
 
 

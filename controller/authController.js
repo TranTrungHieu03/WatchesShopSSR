@@ -2,95 +2,77 @@ const MemberService = require("../services/memberService");
 const bcrypt = require('bcrypt');
 const { Token } = require("../utils/token");
 const { Member } = require("../model");
+const passport = require("passport");
+const { User } = require("lucide");
+const { isAdmin } = require("../middleware/authMiddleware");
 const saltRounds = 10;
 
 class AuthController {
 
     async signUp(req, res) {
         try {
-            const { memberName, password, confirmPassword, YOB, name } = req.body
+            const { membername, password, confirmPassword, YOB, name } = req.body
+            console.log(req.body);
+
             const errors = []
-            if (!memberName || !password || !confirmPassword) {
+            if (!membername || !password || !confirmPassword || !name || !YOB) {
                 errors.push({ message: "Please enter all fields" })
             }
             if (password !== confirmPassword) {
                 errors.push({ message: "Password must be matched with confirm password" })
 
             }
+            console.log(errors);
+
             if (errors.length > 0) {
-                return res.status(404).render("auth/signup", {
+                return res.status(400).render("auth/signup", {
                     errors,
-                    memberName, password, confirmPassword, YOB, name
+                    membername, password, confirmPassword, YOB, name
                 })
             }
-
-            const user = MemberService.getOneByMemberName(memberName)
+            const user = MemberService.getOneByMemberName(membername)
             if (!user) {
                 errors.push({ message: "Member name already exists" })
-                return res.status(404).render("auth/signup", {
+                return res.status(400).render("auth/signup", {
                     errors,
-                    memberName, password, confirmPassword, YOB, name
+                    membername, password, confirmPassword, YOB, name
                 })
             }
-            const hashPassword = bcrypt.hashSync(password, saltRounds);
-            const newUser = new Member({ memberName, password: hashPassword, YOB, name })
-            Member.register(newUser, hashPassword, function (err, user) {
-                if (err) {
-                    res.json({ success: false, message: "Your account could not be saved. Error: " + err });
-                } else {
-                    return res.status(201).render("auth/login", { message: "Sign up an account successfully" })
-                    // req.login(user, (err) => {
-                    //     if (err) {
-                    //         res.json({ success: false, message: err });
-                    //     } else {
-                    //         res.json({ success: true, message: "Your account has been saved" });
-                    //     }
-                    // });
-                }
-            });
+            // const hashPassword = bcrypt.hashSync(password, saltRounds);
+            // const newUser = new Member({ memberName, password: hashPassword, YOB, name })
 
-            // await MemberService.createMember({ membername: memberName, password: hashPassword, YOB, name, isAdmin: false })
 
-            // return res.status(201).render("auth/login", { message: "Sign up an account successfully" })
+            await MemberService.createMember(membername, password, YOB, name)
+
+            return res.status(201).redirect("/auth/login")
         } catch (error) {
             console.error("Error Sign up:", error);
             return res.status(500).render("error");
         }
     }
 
-    async login(req, res) {
-        try {
-            const { memberName, password } = req.body;
+    async login(req, res, next) {
 
-            const user = await MemberService.getOneByMemberName(memberName);
-            console.log(user);
-
+        passport.authenticate('local', (err, user, info) => {
+            if (err) {
+                return next(err);
+            }
             if (!user) {
-                return res.status(401).render("auth/login", { memberNameMessage: "memberName not found" })
-            }
-            const isMatched = bcrypt.compareSync(password, user.password)
-            if (!isMatched) {
-                return res.status(404).render("auth/login", { passwordMessage: "Password is wrong" })
+                return res.status(400).json({ message: info.message });
             }
 
-            const accessToken = await Token.generateAccessToken({ memberName, password })
-            // const refreshToken = await Token.generateRefreshToken({ memberName, password })
+            req.logIn(user, (err) => {
+                if (err) {
+                    return next(err);
+                }
 
-            // await res.cookie("refreshToken", refreshToken, {
-            //     httpOnly: true,
-            //     maxAge: 30 * 24 * 60 * 60 * 1000,
-            //     sameSite: "strict",
-            //     secure: true
-            // })
-
-
-            return res.redirect("/home")
-
-
-        } catch (error) {
-            console.error("Error login:", error);
-            return res.status(500).render("error");
-        }
+                if (user.isAdmin) {
+                    return res.redirect("/watch/dashboard")
+                } else {
+                    return res.redirect("/watch")
+                }
+            });
+        })(req, res, next);
     }
 
     async loginWithGoogle(req, res) {
@@ -104,7 +86,7 @@ class AuthController {
     async indexSignup(req, res) {
         try {
             console.log("Signup GET request received");
-            return res.status(200).render("auth/signup")
+            return res.status(200).render("./auth/signup")
         } catch (error) {
             console.error("Error signup:", error);
             return res.status(500).render("error");
@@ -114,13 +96,21 @@ class AuthController {
     async indexLogin(req, res) {
         try {
             console.log("Login GET request received");
-            return res.status(200).render("auth/login")
+            return res.status(200).render("./auth/login")
         } catch (error) {
             console.error("Error login:", error);
             return res.status(500).render("error");
         }
     }
+    async logout(req, res) {
+        req.logout((err) => {
+            if (err) {
+                return next(err);
+            }
 
+            return res.redirect("/watch");
+        });
+    }
 
 }
 

@@ -11,7 +11,16 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   </head>
   <body>
-    <div class="mx-20 my-10 flex items-center justify-center">
+    <div class="mx-20 my-10 flex flex-col">
+      <div class="flex items-end justify-end ">
+        <a href="/watch/form" class="text-right">
+          <button
+            class="bg-gray-900 text-white font-medium px-3 py-1 rounded hover:bg-gray-950"
+          >
+            Add new
+          </button>
+        </a>
+      </div>
       <table
         class="table-auto w-full caption-bottom text-base border-collapse bg-white shadow-md rounded-lg overflow-hidden"
       >
@@ -24,6 +33,7 @@
             <th class="px-4 py-2 text-left">Brand name</th>
             <th class="px-4 py-2 text-left">Name</th>
             <th class="px-4 py-2 text-left">Price</th>
+            <th class="px-4 py-2 text-left">Automatic</th>
             <th class="px-4 py-2 text-left">Image</th>
             <th class="px-4 py-2 text-left"></th>
           </tr>
@@ -31,15 +41,16 @@
         <tbody>
           <% watches.map((w, index) => { %>
           <tr class="border-b">
-            <td class="px-4 py-2 text-center"><%= index %></td>
+            <td class="px-4 py-2 text-center"><%= index + 1 %></td>
             <td class="px-4 py-2 text-left"><%= w.brand.brandName %></td>
             <td class="px-4 py-2 text-left"><%= w.watchName %></td>
             <td class="px-4 py-2 text-left"><%= w.price %></td>
+            <td class="px-4 py-2 text-left"><%= w.isAutomatic ? "True" : "False" %></td>
             <td class="px-4 py-2 text-left">
               <img src="<%= w.image %>" alt="" class="w-24 h-24 object-cover" />
             </td>
             <td>
-              <a href="/watch/delete/<%= w._id.toString() %>">
+              <a href="/watch/delete/<%= w._id %>">
                 <button
                   class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
                 >
@@ -59,6 +70,7 @@
           <% }) %>
         </tbody>
       </table>
+      
     </div>
   </body>
 </html>

@@ -2,19 +2,21 @@
 var express = require('express');
 const BrandController = require('../controller/brandController');
 var router = express.Router();
+const authMiddleware = require('../middleware/authMiddleware');
 
+router.get("/form", authMiddleware.ensureAuthenticated, authMiddleware.isAdmin, BrandController.indexCreate)
 
 router.route("/")
     .get(BrandController.getAllBrand)
-    .post(BrandController.createBrand)
+    .post(authMiddleware.ensureAuthenticated, authMiddleware.isAdmin, BrandController.createBrand)
 router.route("/dashboard")
-    .get(BrandController.viewAllBrand)
+    .get(authMiddleware.ensureAuthenticated, authMiddleware.isAdmin, BrandController.viewAllBrand)
 
 router.route("/:brandId")
     .get(BrandController.getBrand)
-    .put(BrandController.updateBrand)
-    .delete(BrandController.deleteBrand)
-
+    .post(authMiddleware.ensureAuthenticated, authMiddleware.isAdmin, BrandController.updateBrand)
+    .delete(authMiddleware.ensureAuthenticated, authMiddleware.isAdmin, BrandController.deleteBrand)
+router.get("/edit/:brandId", BrandController.indexEdit)
 
 
 module.exports = router;

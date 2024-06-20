@@ -1,13 +1,14 @@
 var express = require('express');
 const CommentController = require('../controller/commentController');
 var router = express.Router();
+const authMiddleware = require('../middleware/authMiddleware');
 
-/* GET home page. */
-// router.get('/', function(req, res, next) {
-//   res.render('index', { title: 'Express' });
-// });
 
 router.route("/")
-.get(CommentController.getAllComments)
+.get(authMiddleware.ensureAuthenticated,CommentController.getAllComments)
+
+router.route("/:watchId")
+// .get(authMiddleware.ensureAuthenticated,)
+.post(authMiddleware.ensureAuthenticated,CommentController.createComment)
 
 module.exports = router;

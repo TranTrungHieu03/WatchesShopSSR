@@ -29,24 +29,40 @@
             >
           </div>
           <div>
-            <a href="/account" class="flex items-center hover-underline px-4"
+            <a href="/member/dashboard" class="flex items-center hover-underline px-4"
               >Member</a
             >
           </div>
+
+          <% if ( user?._id )  { %>
+            <div>
+              <a href="/member/<%= user?._id %>" class="flex items-center hover-underline px-4"
+                >My Profile</a
+              >
+            </div>
+            <% }  %>
         </div>
 
         <div class="flex">
 
         <div class="flex gap-4 items-center">
-          <!-- <i class="fas fa-user fa-2x text-primary"/> -->
-
-          <a href="/logout"
-            ><button
-              class="py-2 px-3 text-black font-bold bg-gray-100 w-fit   hover:bg-gray-200"
-            >
-              Log out
-            </button>
-          </a>
+          <% if (user?._id ) { %>
+            <a href="/logout"
+              ><button
+                class="py-2 px-3 text-black font-bold bg-gray-100 w-fit   hover:bg-gray-200"
+              >
+                Log out
+              </button>
+            </a>
+            <% }else { %>
+              <a href="/login"
+              ><button
+                class="py-2 px-3 text-black font-bold bg-gray-100 w-fit   hover:bg-gray-200"
+              >
+                Login
+              </button>
+            </a>
+              <% } %>
         </div>
       </div>
 
