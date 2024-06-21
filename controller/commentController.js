@@ -1,4 +1,8 @@
+const { Watch } = require("lucide");
+const { Comment } = require("../model");
 const commentServices = require("../services/commentServices");
+const watchService = require("../services/watchService");
+const watchController = require("./watchController");
 
 class CommentController {
     async getCommentsByAuthor(req, res) {
@@ -35,13 +39,24 @@ class CommentController {
             const author = req.user._id;
 
             console.log(watchId, content, rating, author);
+            const comment = new Comment({ content, rating, author })
 
+            const watch = await watchService.getWatchById(watchId);
+            if (!watch) {
+                return res.status(400)
+            }
+            watch.comments.push(comment);
+            await watch.save();
+
+            await commentServices.createComment(comment);
+
+            return res.status(201).redirect(`/watch/${watchId}`);
         } catch (error) {
             console.error("Error create comments:", error);
             return res.status(500).render("error");
         }
     }
-
+ 
 }
 
 module.exports = new CommentController

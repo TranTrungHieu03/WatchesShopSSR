@@ -4,19 +4,23 @@ const brandRouter = require("./brand")
 const authRouter = require("./auth")
 const watchRouter = require("./watch")
 const memberRouter = require("./member")
+const commentRouter = require("./comment")
 
 
 router.use("/", authRouter)
+router.use((req, res, next) => {
+    if (req.url === '/' && req.method === 'GET') {
+        res.redirect('/watch');
+    } else {
+        next();
+    }
+});
 router.use("/brand", brandRouter)
 
 router.use("/watch", watchRouter)
 router.use("/member", memberRouter)
+router.use("/comment", commentRouter)
 router.use("/forbidden", (req, res) => { res.render("forbidden") })
-// router.get("/home", (req, res) => {
-//     res.status(200).render("layout", {
-//         body: "index",
-//         title: "Home Page"
-//     })
-// })
+
 
 module.exports = router;

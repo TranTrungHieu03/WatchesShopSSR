@@ -1,4 +1,5 @@
 const { Comment } = require("../model")
+const { isComment } = require("./watchService")
 
 class CommentService {
     async getAll() {
@@ -50,6 +51,19 @@ class CommentService {
             return await Comment.find({ author: author })
         } catch (error) {
             throw new Error("Error fetching comment", error)
+        }
+    }
+    async isComment(list, author) {
+        try {
+            var rs = true;
+            list.forEach((w) => {
+                if (w.author._id.toString() == author.toString()) {
+                    rs = false;
+                }
+            })
+            return rs
+        } catch (error) {
+            throw new Error("Error find comment", error)
         }
     }
 

@@ -14,6 +14,7 @@ router.route("/search").post(watchController.searchWatch);
 router.post("/filter", watchController.filterWatch);
 
 router.get("/edit/:watchId", authMiddleware.ensureAuthenticated, authMiddleware.isAdmin, watchController.indexEdit);
+router.get("/delete/:watchId", authMiddleware.ensureAuthenticated, authMiddleware.isAdmin, watchController.deleteWatch);
 
 
 
@@ -23,7 +24,7 @@ router.route("/")
 
 
 router.route("/:watchId")
-  .get(watchController.getWatch)
+  .get(authMiddleware.ensureAuthenticated, watchController.getWatch)
   .post(authMiddleware.ensureAuthenticated, watchController.updateWatch)
   .delete(authMiddleware.ensureAuthenticated, watchController.deleteWatch);
 

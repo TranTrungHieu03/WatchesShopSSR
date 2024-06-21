@@ -7,8 +7,7 @@ const authMiddleware = require('../middleware/authMiddleware');
 router.route("/")
 .get(authMiddleware.ensureAuthenticated,CommentController.getAllComments)
 
-router.route("/:watchId")
-// .get(authMiddleware.ensureAuthenticated,)
+router.route("/watch/:watchId")
 .post(authMiddleware.ensureAuthenticated,CommentController.createComment)
 
 module.exports = router;

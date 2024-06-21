@@ -8,4 +8,56 @@
 <body>
     
 </body>
+</html><!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title %></title>
+    </title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body  >
+    <div class=" mx-20 flex flex-col gap-4">
+        <h2 class="text-4xl font-black py-4">User Profile</h2>
+        <div  class="w-1/2">
+            <form method="POST" action="/member/update/<%= user._id.toString() %>">
+                <div class="">
+                    <label class="block text-gray-700 font-bold mb-2">Name:</label>
+                    <input type="text" value="<%= user.name %>"
+                    class="border-input placeholder:text-muted-foreground focus-visible:ring-ring flex h-9 w-full border bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-1 disabled:cursor-not-allowed disabled:opacity-50"
+                    name="name">
+                    <!-- <p class="text-gray-900 font-medium"><%= user.name %></p> -->
+                </div>
+                <div class="">
+                    <label class="block text-gray-700 font-bold mb-2">Membername:</label>
+                    <input type="text" value="<%= user.membername %>"
+                    class="border-input placeholder:text-muted-foreground focus-visible:ring-ring flex h-9 w-full border bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-1 disabled:cursor-not-allowed disabled:opacity-50"
+                    name="membername">
+                    <!-- <p class="text-gray-900 font-medium"><%= user.membername %></p> -->
+                </div>
+                <div class="">
+                    <label class="block text-gray-700 font-bold mb-2">Year of Birth:</label>
+                    <input type="number" value="<%= user.YOB %>"
+                    class="border-input placeholder:text-muted-foreground focus-visible:ring-ring flex h-9 w-full border bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-1 disabled:cursor-not-allowed disabled:opacity-50"
+                    name="YOB">
+                    <!-- <p class="text-gray-900 font-medium"><%= user.YOB %></p> -->
+                </div>
+                <div class="">
+                    <label class="block text-gray-700 font-bold mb-2">Role:</label>
+                    <input type="text"value="<%= user.isAdmin ? 'ADMIN' : 'MEMBER' %>"
+                    class="border-input placeholder:text-muted-foreground focus-visible:ring-ring flex h-9 w-full border bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-1 disabled:cursor-not-allowed disabled:opacity-50"
+                    name="isAdmin" disabled>
+                    <!-- <p class="text-gray-900 font-medium"><%= user.isAdmin ? "Admin" :"Member" %></p> -->
+                </div>
+                <div class="flex mt-4">
+                    <button type="submit" class="py-2 px-4 bg-gray-800 text-white font-semibold rounded hover:bg-gray-700">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
 </html>

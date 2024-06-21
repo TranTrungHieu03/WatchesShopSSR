@@ -58,13 +58,15 @@ class WatchController {
     }
     async getWatch(req, res) {
         try {
+            const author = req.user._id;
             const watch = await watchService.getWatchById(req.params.watchId);
-            console.log(watch);
-
+            const rs = await commentServices.isComment(watch.comments, author);
+            console.log(rs);
             return res.status(200).render("layout", {
                 body: "./watch/index",
                 title: "Watch Page",
-                watch: watch
+                watch: watch,
+                isComment: rs
             })
         } catch (error) {
             console.error("Error fetching watch:", error);
@@ -73,7 +75,6 @@ class WatchController {
     }
     async searchWatch(req, res) {
         try {
-            console.log(33333333333333333333333);
 
             const searchItem = req.body.searchName;
             const watches = await watchService.findByName(searchItem)
@@ -137,10 +138,13 @@ class WatchController {
     async deleteWatch(req, res) {
         try {
             const { watchId } = req.params
-
-            await watchService.deleteWatchById(watchId)
-
-            return res.redirect("/home")
+            const watch = await watchService.getWatchById(watchId);
+            if (watch.comments.length > 0) {
+                return res.status(400).redirect("/watch/dashboard")
+            } else {
+                await watchService.deleteWatchById(watchId)
+                return res.status(400).redirect("/watch/dashboard")
+            }
         } catch (error) {
             console.error("Error delete watch:", error);
             return res.status(500).render("error");

@@ -1,4 +1,4 @@
-// config/passport.js
+
 const LocalStrategy = require('passport-local').Strategy;
 const memberService = require('../services/memberService');
 

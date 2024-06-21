@@ -9,6 +9,42 @@
       href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
       rel="stylesheet"
     />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <script>
+      $(document).ready(function () {
+        const stars = $(".star");
+        let selectedRating = 3;
+        highlightStars(selectedRating);
+
+        stars.on("mouseover", function () {
+          const value = $(this).data("value");
+          highlightStars(value);
+        });
+
+        stars.on("mouseout", function () {
+          highlightStars(selectedRating);
+        });
+
+        stars.on("click", function () {
+          selectedRating = $(this).data("value");
+          highlightStars(selectedRating);
+        });
+
+        $("#send").on("click", function () {
+          // const content = $("#content").val();
+          $("#rating-value").val(selectedRating);
+          highlightStars(selectedRating);
+        });
+
+        function highlightStars(value) {
+          stars.each(function () {
+            const starValue = $(this).data("value");
+            $(this).css("color", starValue <= value ? "yellow" : "gray");
+          });
+        }
+      });
+    </script>
   </head>
   <body>
     <div class="md:mx-20 py-5 sm:mx-5 sm:justify-center">
@@ -52,16 +88,83 @@
           <div class="py-3">
             <div class="font-black collapse text-2xl">Product review</div>
             <div>
-              <form method="POST" action="/watch/<%= watch._id %>/comment">
-                <div class="w-full flex gap-2">
-                  <input
-                    name="comment"
-                    type="text"
-                    class="border-input placeholder:text-muted-foreground rounded focus-visible:ring-ring flex h-9 w-full border bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-1 disabled:cursor-not-allowed disabled:opacity-50"
-                  />
-                  <button type="submit" class=" bg-gray-400 font-bold px-2  text-center justify-center items-center flex rounded cursor-pointer">Send</button>
+              <% if (isComment) { %>
+              <form
+                method="POST"
+                action="/comment/watch/<%= watch._id %>"
+                class="flex flex-col gap-2"
+              >
+                <div class="flex gap-2">
+                  <div class="flex flex-col gap-2 w-full">
+                    <div class="flex gap-2 items-center">
+                      <div id="rating" class="flex space-x-2">
+                        <% for(let i = 1; i <= 3; i++) { %>
+                        <i
+                          data-value="<%= i %>"
+                          class="fas fa-star star text-2xl cursor-pointer"
+                        ></i>
+                        <% } %>
+                      </div>
+                      <input type="hidden" name="rating" id="rating-value" />
+                    </div>
+                    <div class="w-full">
+                      <input
+                        name="content"
+                        type="text"
+                        placeholder="comment here"
+                        class="border-input placeholder:text-muted-foreground rounded focus-visible:ring-ring flex h-9 w-full border bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-1 disabled:cursor-not-allowed disabled:opacity-50"
+                      />
+                    </div>
+                  </div>
                 </div>
+                <button
+                  type="submit"
+                  id="send"
+                  class="bg-gray-900 font-bold px-3 text-center text-white w-fit py-2 justify-center items-center flex rounded cursor-pointer"
+                >
+                  Send
+                </button>
               </form>
+              <% }%>
+            </div>
+            <div class="flex flex-col gap-3 pt-4">
+              <% if (watch.comments?.length > 0) { watch?.comments.map((e) => {
+              %>
+              <div class="flex gap-3">
+                <img
+                  src="https://res.cloudinary.com/dtcaf7prf/image/upload/v1717734436/WatchesSDN/unique_id_1717734431481.jpg"
+                  alt="user"
+                  class="h-16 w-16 rounded-full"
+                />
+
+                <div>
+                  <div class="flex gap-2 items-center">
+                    <p class="font-bold"><%= e.author.membername %></p>
+                    <div>
+                      <% for(let i = 1; i <= e.rating; i++) { %>
+
+                      <i
+                        class="fas fa-star text-2xl cursor-pointer"
+                        style="color: yellow"
+                      ></i>
+                      <% } %> <% for(let i = 1; i <= 3 - e.rating; i++) { %>
+                      <i
+                        class="fas fa-star text-2xl cursor-pointer"
+                        style="color: gray"
+                      ></i>
+                      <% } %>
+                    </div>
+                  </div>
+                  <p class="py-1"><%= e?.content %></p>
+                </div>
+              </div>
+
+              <%} )} else { %>
+
+              <div class="font-sm p-4 text-gray-700 text-center">
+                Do not have any comment for this product
+              </div>
+              <%} %>
             </div>
           </div>
         </div>

@@ -14,6 +14,13 @@ class AuthMiddleWare {
       res.redirect('/forbidden');
     }
   }
+  async isPermissionUpdate(req, res, next) {
+    if (req.user._id.toString() == req.params.userId.toString()) {
+      next();
+    } else {
+      res.redirect('/forbidden');
+    }
+  }
 
 }
 

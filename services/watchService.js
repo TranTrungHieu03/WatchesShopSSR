@@ -12,7 +12,21 @@ class WatchService {
     }
     async getWatchById(watchId) {
         try {
-            const watch = await Watch.findById(watchId).populate("brand")
+            // const watch = await Watch.findById(watchId)
+            //     .populate("brand")
+            //     .populate("comments")
+            //     .exec();
+            const watch = await Watch.findById(watchId)
+                .populate("brand", "brandName")
+                .populate({
+                    path: "comments",
+                    populate: {
+                        path: "author",
+                        select: "membername name"
+                    },
+                });
+
+            
             return watch
         } catch (error) {
             throw new Error("Error fetching watch", error)
@@ -38,10 +52,7 @@ class WatchService {
 
 
             const updateWatch = await Watch.findByIdAndUpdate(watchId, data, { new: true });
-            // const updateWatch = await Watch.findByIdAndUpdate(watchId, data, { new: true }).catch(err => {
-            //     console.error('Lỗi từ MongoDB:', err);
-            //     throw new Error('Không thể cập nhật đồng hồ');
-            // });
+
 
             console.log(updateWatch);
 

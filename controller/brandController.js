@@ -1,4 +1,5 @@
 const BrandService = require("../services/brandService");
+const watchService = require("../services/watchService");
 
 class BrandController {
     static async getAllBrand(req, res) {
@@ -19,7 +20,7 @@ class BrandController {
     static async viewAllBrand(req, res) {
         try {
             const brands = await BrandService.getAllBrands();
-            return res.status(200).render("adminLayout", { brands: brands , body: "./brand/dashboard", title: "Brand Dashboard",})
+            return res.status(200).render("adminLayout", { brands: brands, body: "./brand/dashboard", title: "Brand Dashboard", })
 
         } catch (error) {
             console.error("Error fetching brands:", error);
@@ -43,7 +44,7 @@ class BrandController {
             const data = req.body;
             const newBrand = await BrandService.createBrand(data);
             return res.redirect("/brand/dashboard")
-             
+
         } catch (error) {
             console.error("Error create brand:", error);
             return res.status(500).render("error");
@@ -53,12 +54,12 @@ class BrandController {
     static async updateBrand(req, res) {
         try {
             const brandId = req.params.brandId
-            const {brandName } = req.body;
+            const { brandName } = req.body;
             const brand = await BrandService.getBrandById(brandId)
             if (!brand) {
                 return res.status(400).render("")
             }
-            await BrandService.updateBrandById( brandId, brandName);
+            await BrandService.updateBrandById(brandId, brandName);
             return res.status(200).redirect("/brand/dashboard")
         } catch (error) {
             console.error("Error update brand:", error);
@@ -68,8 +69,15 @@ class BrandController {
     static async deleteBrand(req, res) {
         try {
             const { brandId } = req.params;
-            const deleteBrand = await BrandService.deleteBrandById(brandId);
-            return res.status(200).render("brand/index", deleteBrand)
+            const watches = await watchService.getByBrand([brandId]);
+            const brands = await  BrandService.getAllBrands()
+            if (watches?.length > 0) {
+                return res.status(200).redirect("/brand/dashboard")
+            } else {
+                await BrandService.deleteBrandById(brandId);
+                return res.status(200).redirect("/brand/dashboard")
+            }
+
         } catch (error) {
             console.error("Error deletef brand:", error);
             return res.status(500).render("error");
@@ -99,7 +107,7 @@ class BrandController {
             return res.status(500).render("error");
         }
     }
-    
+
 }
 
 module.exports = BrandController
