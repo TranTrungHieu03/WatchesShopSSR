@@ -8,11 +8,11 @@ class WatchController {
     async getAll(req, res) {
         try {
             const watches = await watchService.getAllWatchs();
-
+            console.log(req.flash());
             return res.status(200).render("layout", {
                 body: "index",
                 title: "Watch Page",
-                watches: watches
+                watches: watches,
             })
         } catch (error) {
             console.error("Error fetching watches:", error);
@@ -26,7 +26,8 @@ class WatchController {
             return res.status(200).render("adminLayout", {
                 body: "./watch/dashboard",
                 title: "Watch Dashboard",
-                watches: watches
+                watches: watches,
+
             })
         } catch (error) {
             console.error("Error fetching watches:", error);
@@ -95,16 +96,16 @@ class WatchController {
 
 
             if (!watchName || !price || !watchDescription || !brand) {
-                return res.status(404).render("layout", {
-                    body: "./watch/form",
-                    message: "Fill all type are required!"
-                })
+
+                req.session.message = { type: "danger", message: "Fill all type are required!" }
+                return res.redirect("/watch/form")
             }
-            console.log(watchName, price, isAutomatic, watchDescription, comments, brand, image);
+
 
 
             await watchService.createWatch({ watchName, price, isAutomatic, watchDescription, comments, brand, image })
-            return res.redirect("/watch")
+            req.session.message = { type: "success", message: "Add new watch success" }
+            return res.redirect("/watch/dashboard")
 
         } catch (error) {
             console.error("Error create watch:", error);
@@ -117,18 +118,20 @@ class WatchController {
             const { watchName, price, watchDescription, brand, isAutomatic } = req.body
 
             if (!watchName || !price || !watchDescription || !brand) {
-                return res.status(400).send({ message: "Bad request" })
+                req.session.message = { type: "danger", message: "Fill all type are required!" }
+                return res.redirect(`/watch/${watchId}`)
             }
             const watch = await watchService.getWatchById(watchId)
 
             if (!watch) {
-                return res.status(400).send({ message: "Not found watch" })
+                req.session.message = { type: "danger", message: "Not found watch!" }
+                return res.redirect(`/watch/${watchId}`)
+                // return res.status(400).send({ message: "Not found watch" })
             }
-            // const data = new Watch(req.body)
 
             await watchService.updateWatchById(watchId, req.body)
-
-            return res.redirect(`/watch/dashboard`)
+            req.session.message = { type: "success", message: "Update watch success!" }
+            return res.redirect("/watch/dashboard")
         } catch (error) {
             console.error("Error update watch:", error);
             return res.status(500).render("error");
@@ -140,10 +143,14 @@ class WatchController {
             const { watchId } = req.params
             const watch = await watchService.getWatchById(watchId);
             if (watch.comments.length > 0) {
-                return res.status(400).redirect("/watch/dashboard")
+                req.session.message = { type: "danger", message: "Cannot delete watch!" }
+                return res.redirect("/watch/dashboard")
+                // return res.status(400).redirect("/watch/dashboard")
             } else {
                 await watchService.deleteWatchById(watchId)
-                return res.status(400).redirect("/watch/dashboard")
+                req.session.message = { type: "success", message: "Delete watch success!" }
+                return res.redirect("/watch/dashboard")
+                // return res.status(400).redirect("/watch/dashboard")
             }
         } catch (error) {
             console.error("Error delete watch:", error);
@@ -160,20 +167,23 @@ class WatchController {
             const watch = watchService.getWatchById(watchId)
 
             if (!watch) {
-                return res.render("error")
+                req.session.message = { type: "danger", message: "Not found watch!" }
+                return res.redirect(`/watch/${watchId}`)
             }
 
 
             const isCommentByAuthor = await watchService.isComment(author, watch.comments)
             if (isCommentByAuthor) {
-                return res.render("error")
+                req.session.message = { type: "danger", message: "You already have commented!" }
+                return res.redirect(`/watch/${watchId}`)
+                // return res.render("error")
             }
 
             const commentData = new Comment(rating, content, author)
             const comment = await commentServices.createComment(commentData)
             const updateComments = await watchService.updateComment(comment, watch.comments)
             await watchService.updateWatchById(watch, { comments: updateComments })
-
+            req.session.message = { type: "success", message: "You already have commented!" }
             return res.redirect(`watch/${watchId}`)
         } catch (error) {
             console.error("Error comment watch:", error);

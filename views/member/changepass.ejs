@@ -14,22 +14,28 @@
   <body>
     <div class="container mx-auto md:w-1/3 sm:w-2/3 border p-4 h-fit mt-10">
       <form action="/member/<%= user._id.toString() %>/change-pass" method="POST" class="flex flex-col gap-6">
-        <div class="text-4xl font-extrabold text-center">Create a new brand</div>
+        <div class="text-4xl font-extrabold text-center">Change password</div>
         <div class="flex flex-col gap-2">
           <div>
             <label for="password" class="font-medium">New password</label>
             <input
               type="text"
               name="password"
+              required
               class="border-input placeholder:text-muted-foreground focus-visible:ring-ring flex h-9 w-full border bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-1 disabled:cursor-not-allowed disabled:opacity-50"
               id=""
+              pattern="(?=.*[a-zA-Z0-9]).{6,}"
+                title="Password must be at least 6 characters long ."
             />
           </div>
           <div>
             <label for="confirmPassword" class="font-medium">Confirm password</label>
             <input
               type="password"
+              required
               name="confirmPassword"
+              pattern="(?=.*[a-zA-Z0-9]).{6,}"
+                title="Password must be at least 6 characters long ."
               class="border-input placeholder:text-muted-foreground focus-visible:ring-ring flex h-9 w-full border bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-1 disabled:cursor-not-allowed disabled:opacity-50"
               id=""
             />

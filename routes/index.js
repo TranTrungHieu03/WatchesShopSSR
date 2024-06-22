@@ -10,7 +10,12 @@ const commentRouter = require("./comment")
 router.use("/", authRouter)
 router.use((req, res, next) => {
     if (req.url === '/' && req.method === 'GET') {
-        res.redirect('/watch');
+        if (req.user.isAdmin) {
+            res.redirect('/watch/dashboard');
+        } else {
+            res.redirect('/watch');
+        }
+
     } else {
         next();
     }

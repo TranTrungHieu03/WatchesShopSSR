@@ -45,11 +45,12 @@ class MemberController {
             const { userId } = req.params
             const { name, membername, YOB } = req.body;
             if (!name || !membername || !YOB) {
-                res.status(400)
+                req.session.message = { type: "danger", message: "Fill all type are required!" }
+                return res.redirect(`member/update/${userId}`)
             }
 
             const member = await memberService.updateMemberById(userId, { membername, name, YOB })
-
+            req.session.message = { type: "success", message: "Update profile successfully!" }
             return res.redirect(`/member/${userId}`)
         } catch (error) {
             console.error("Error update member:", error);
@@ -74,6 +75,10 @@ class MemberController {
     async indexEdit(req, res) {
         try {
             const member = await MemberService.getMemberById(req.params.userId);
+            if (!member) {
+                req.session.message = { type: "danger", message: "Not found member!" }
+                return res.redirect(`/member/dashboard`)
+            }
             if (req.user.isAdmin) {
                 return res.status(200).render("adminLayout", {
                     body: "./member/update",
@@ -97,7 +102,10 @@ class MemberController {
     async indexChangePass(req, res) {
         try {
             const member = await MemberService.getMemberById(req.params.userId);
-
+            if (!member) {
+                req.session.message = { type: "danger", message: "Not found member!" }
+                return res.redirect(`/member/dashboard`)
+            }
             if (req.user.isAdmin) {
                 return res.status(200).render("adminLayout", {
                     body: "./member/changepass",

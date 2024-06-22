@@ -23,6 +23,7 @@
             <label for="watchName" class="font-medium">Watch name</label>
             <input
               type="text"
+              required
               name="watchName"
               class="border-input placeholder:text-muted-foreground focus-visible:ring-ring flex h-9 w-full border bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-1 disabled:cursor-not-allowed disabled:opacity-50"
               value="<%= watch.watchName %>"
@@ -86,6 +87,7 @@
             <input
               type="url"
               name="image"
+              required
               class="border-input placeholder:text-muted-foreground focus-visible:ring-ring flex h-9 w-full border bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-1 disabled:cursor-not-allowed disabled:opacity-50"
               value="<%= watch.image %>"
             />
@@ -94,6 +96,7 @@
             <label for="watchDescription" class="font-medium">Description</label>
             <input
               type="string"
+              required
               name="watchDescription"
               class="border-input placeholder:text-muted-foreground focus-visible:ring-ring flex h-9 w-full border bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-1 disabled:cursor-not-allowed disabled:opacity-50"
               value="<%= watch.watchDescription %>"

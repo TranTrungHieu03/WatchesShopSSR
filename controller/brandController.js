@@ -42,7 +42,13 @@ class BrandController {
     static async createBrand(req, res) {
         try {
             const data = req.body;
+            if (!data) {
+                req.session.message = { type: "danger", message: "Fill all type are required!" }
+                return res.redirect(`/brand/form`)
+            }
             const newBrand = await BrandService.createBrand(data);
+            req.session.message = { type: "success", message: "Add new brand successfull!" }
+            
             return res.redirect("/brand/dashboard")
 
         } catch (error) {
@@ -57,9 +63,12 @@ class BrandController {
             const { brandName } = req.body;
             const brand = await BrandService.getBrandById(brandId)
             if (!brand) {
-                return res.status(400).render("")
+                req.session.message = { type: "danger", message: "Not found brand!" }
+                return res.redirect(`/brand/${brandId}`)
+                // return res.status(400).render("")
             }
             await BrandService.updateBrandById(brandId, brandName);
+            req.session.message = { type: "success", message: "Add new brand successfull!" }
             return res.status(200).redirect("/brand/dashboard")
         } catch (error) {
             console.error("Error update brand:", error);
@@ -72,9 +81,11 @@ class BrandController {
             const watches = await watchService.getByBrand([brandId]);
             const brands = await  BrandService.getAllBrands()
             if (watches?.length > 0) {
+                req.session.message = { type: "danger", message: "Cannot delete brand!" }
                 return res.status(200).redirect("/brand/dashboard")
             } else {
                 await BrandService.deleteBrandById(brandId);
+                req.session.message = { type: "success", message: "Delete brand successfull!" }
                 return res.status(200).redirect("/brand/dashboard")
             }
 

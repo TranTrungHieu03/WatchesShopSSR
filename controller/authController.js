@@ -9,34 +9,44 @@ class AuthController {
             const { membername, password, confirmPassword, YOB, name } = req.body
             console.log(req.body);
 
-            const errors = []
             if (!membername || !password || !confirmPassword || !name || !YOB) {
-                errors.push({ message: "Please enter all fields" })
+                req.session.message = { type: "danger", message: "Please fill all field" }
+                req.session.info = { membername, password, confirmPassword, YOB, name }
+                return res.redirect("/signup")
+                // return res.render("auth/signup", {
+                //     membername, password, confirmPassword, YOB, name
+                // })
             }
             if (password !== confirmPassword) {
-                errors.push({ message: "Password must be matched with confirm password" })
+                req.session.message = { type: "danger", message: "Password must be matched with confirm password" }
+                req.session.info = { membername, password, confirmPassword, YOB, name }
+                return res.redirect("/signup")
+                // return res.render("auth/signup", {
+                //     membername, password, confirmPassword, YOB, name
+                // })
 
             }
-            console.log(errors);
 
-            if (errors.length > 0) {
-                return res.status(400).render("auth/signup", {
-                    errors,
-                    membername, password, confirmPassword, YOB, name
-                })
-            }
+            // if (errors.length > 0) {
+            //     return res.status(400).render("auth/signup", {
+            //         errors,
+            //         membername, password, confirmPassword, YOB, name
+            //     })
+            // }
             const user = MemberService.getOneByMemberName(membername)
-            if (!user) {
-                errors.push({ message: "Member name already exists" })
-                return res.status(400).render("auth/signup", {
-                    errors,
-                    membername, password, confirmPassword, YOB, name
-                })
+            if (user) {
+                req.session.message = { type: "danger", message: "Member name already exists" }
+                req.session.info = { membername, password, confirmPassword, YOB, name }
+                return res.redirect("/signup")
+                // errors.push({ message: "Member name already exists" })
+                // return res.render("auth/signup", {
+                //     membername, password, confirmPassword, YOB, name
+                // })
             }
 
 
             await MemberService.createMember(membername, password, YOB, name)
-
+            req.session.message = { type: "success", message: "Sign up successfully" }
             return res.status(201).redirect("/login")
         } catch (error) {
             console.error("Error Sign up:", error);
@@ -51,7 +61,10 @@ class AuthController {
                 return next(err);
             }
             if (!user) {
-                return res.status(400).json({ message: info.message });
+                req.session.message = { type: "danger", message: info.message }
+                req.session.info = { membername: req.body.membername, password: req.body.password }
+                return res.status(400).redirect("/login")
+                // return res.status(400).json({ message: info.message });
             }
 
             req.logIn(user, (err) => {
@@ -60,12 +73,10 @@ class AuthController {
                 }
 
                 if (user.isAdmin) {
-                    req.flash('success', "Login Success")
-                    console.log(req.flash());
+                    req.session.message = { type: "success", message: "Login Successfully" }
                     return res.redirect("/watch/dashboard")
                 } else {
-                    req.flash('success', "Login Success")
-                    console.log(req.flash());
+                    req.session.message = { type: "success", message: "Login Successfully" }
                     return res.redirect("/watch")
                 }
             });
@@ -80,12 +91,16 @@ class AuthController {
     async confirmPass(req, res) {
         try {
             const user = await memberService.getMemberById(req.params.userId);
-
+            if (!user) {
+                req.session.message = { type: "danger", message: "Cannot found user!" }
+                return res.redirect("/member/dashboard")
+            }
             const isMatch = await user.matchPassword(req.body.password)
             if (!isMatch) {
-                return res.status(400)
+                req.session.message = { type: "danger", message: "Password is incorrect" }
+                return res.redirect(`/member/${req.params.userId}`)
             }
-
+            req.session.message = { type: "success", message: "Password is correct" }
             return res.redirect(`/member/${req.params.userId}/change-pass`)
         } catch (error) {
             console.error("Error confirm pass:", error);
@@ -100,16 +115,23 @@ class AuthController {
 
 
             if (confirmPassword !== password) {
-                return res.status(400)
+                req.session.message = { type: "danger", message: "Password is not match" }
+                return res.redirect(`/member/${userId}/change-pass`)
             }
             if (!userId) {
-                return res.status(400)
+                req.session.message = { type: "danger", message: "User is not found" }
+                return res.redirect(`/member/dashboard`)
+                // return res.status(400)
             }
             const user = await memberService.getMemberById(userId)
 
+            if (user.matchPassword(password)) {
+                req.session.message = { type: "danger", message: "Password must be different the old one" }
+                return res.redirect(`/member/${userId}/change-pass`)
+            }
             user.password = password;
             await user.save();
-
+            req.session.message = { type: "success", message: "Change password is completed" }
             if (req.user.isAdmin) {
                 return res.status(200).render("adminLayout", {
                     body: "./member/update",
@@ -142,7 +164,7 @@ class AuthController {
     async indexLogin(req, res) {
         try {
             console.log("Login GET request received");
-            return res.status(200).render("./auth/login")
+            return res.status(200).render("./auth/login");
         } catch (error) {
             console.error("Error login:", error);
             return res.status(500).render("error");
@@ -153,7 +175,7 @@ class AuthController {
             if (err) {
                 return next(err);
             }
-
+            req.session.message = { type: "success", message: "Log out successfully" }
             return res.redirect("/watch");
         });
     }

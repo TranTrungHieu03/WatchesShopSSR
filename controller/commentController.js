@@ -43,13 +43,14 @@ class CommentController {
 
             const watch = await watchService.getWatchById(watchId);
             if (!watch) {
-                return res.status(400)
+                req.session.message = { type: "danger", message: "Not found watch!" }
+                return res.redirect(`/watch/${watchId}`)
             }
             watch.comments.push(comment);
             await watch.save();
 
             await commentServices.createComment(comment);
-
+            req.session.message = { type: "success", message: "You already have commented!" }
             return res.status(201).redirect(`/watch/${watchId}`);
         } catch (error) {
             console.error("Error create comments:", error);
